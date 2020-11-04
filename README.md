@@ -45,7 +45,7 @@ arguments are:
 key = "secret"
 
 signed_url = SignedURL.call("https://nandovieira.com", key: key)
-#=> "https://nandovieira.com/?signature=87fdf44a5109c54edff2e0258b354e32ba5baf3dd21ec5af82f08b82ce362fbf"
+#=> "https://nandovieira.com/?signature=87fdf44a5109c54edff2e0258b354e32ba5b..."
 ```
 
 You can use the method `SignedURL.verified?(url, **kwargs)` to verify if a
@@ -79,7 +79,7 @@ signed_url = SignedURL.call(
   key: secret,
   expires: Time.now.to_i + 120
 )
-#=> "https://nandovieira.com/?expires=1604477596&signature=7ac5eaee20d316c6cd3f81db14cde98c3c669d423a32d2c546730cbb0dcbc6f2"
+#=> "https://nandovieira.com/?expires=1604477596&signature=7ac5eaee20d316..."
 ```
 
 ## Maintainer

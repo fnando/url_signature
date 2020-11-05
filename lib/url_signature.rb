@@ -3,6 +3,7 @@
 require "uri"
 require "cgi"
 require "openssl"
+require "base64"
 
 module URLSignature
   require "url_signature/version"
@@ -12,6 +13,13 @@ module URLSignature
   ExpiredURL = Class.new(StandardError)
   InvalidSignature = Class.new(StandardError)
 
+  HMAC_PROC = lambda do |key, data|
+    Base64.urlsafe_encode64(
+      OpenSSL::HMAC.digest("SHA256", key, data.to_s),
+      padding: false
+    )
+  end
+
   # Create a new signed url.
   def self.call(
     url,
@@ -20,12 +28,12 @@ module URLSignature
     expires: 0,
     signature_param: "signature",
     expires_param: "expires",
-    algorithm: "SHA256"
+    hmac_proc: HMAC_PROC
   )
     expires = expires.to_i
     params[expires_param] = expires if expires.positive?
     url = build_url(url, params)
-    signature = OpenSSL::HMAC.hexdigest(algorithm, key, url.to_s)
+    signature = hmac_proc.call(key, url)
     url.add_query(signature_param, signature)
     url.to_s
   end
@@ -33,14 +41,14 @@ module URLSignature
   def self.verified?(
     url,
     key:,
-    algorithm: "SHA256",
     expires_param: "expires",
-    signature_param: "signature"
+    signature_param: "signature",
+    hmac_proc: HMAC_PROC
   )
     verify!(
       url,
       key: key,
-      algorithm: algorithm,
+      hmac_proc: hmac_proc,
       expires_param: expires_param,
       signature_param: signature_param
     )
@@ -48,21 +56,30 @@ module URLSignature
     false
   end
 
-  def self.verify!(
+  def self.verify!( # rubocop:disable Metrics/MethodLength
     url,
     key:,
-    algorithm: "SHA256",
+    hmac_proc: HMAC_PROC,
     expires_param: "expires",
     signature_param: "signature"
   )
     url = build_url(url)
-    actual_signature, * = url.remove_query(signature_param)
-    expected_signature = OpenSSL::HMAC.hexdigest(algorithm, key, url.to_s)
+    actual_url = url.to_s
+
+    url.remove_query(signature_param)
+
+    expected_url = call(
+      url.to_s,
+      key: key,
+      expires_param: expires_param,
+      hmac_proc: hmac_proc,
+      signature_param: signature_param
+    )
 
     expires = url.params[expires_param]&.first.to_i
 
     raise ExpiredURL if expires.positive? && expires < Time.now.to_i
-    raise InvalidSignature unless actual_signature == expected_signature
+    raise InvalidSignature unless actual_url == expected_url
 
     true
   end

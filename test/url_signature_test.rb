@@ -10,22 +10,29 @@ class URLSignatureTest < Minitest::Test
 
     expected_signed_url =
       "https://example.com/?a=1&b=hello%20there&c=2&d%5B%5D=1&" \
-      "d%5B%5D=2&e%5Ba%5D=1&e%5Bb%5D=2&signature=250f7a7e7eeed" \
-      "d6f52a5d72144850345a36d5db8d9d0574bdf0f2996927ba9d1#fragment"
+      "d%5B%5D=2&e%5Ba%5D=1&e%5Bb%5D=2&signature=" \
+      "JQ96fn7u3W9SpdchRIUDRaNtXbjZ0FdL3w8plpJ7qdE#fragment"
 
     assert_equal expected_signed_url, signed_url
     assert SignedURL.verified?(signed_url, key: "secret")
   end
 
-  test "creates signed url using custom algorithm" do
+  test "creates signed url using custom HMAC algorithm" do
+    hmac_proc = lambda do |key, data|
+      Base64.urlsafe_encode64(
+        OpenSSL::HMAC.digest("sha1", key, data.to_s),
+        padding: false
+      )
+    end
+
     url = "https://example.com"
-    signed_url = SignedURL.call(url, key: "secret", algorithm: "SHA1")
+    signed_url = SignedURL.call(url, key: "secret", hmac_proc: hmac_proc)
 
     expected_signed_url =
-      "https://example.com/?signature=ed9bb6ab7f98bb2b35e39dd765f6c3df3962f372"
+      "https://example.com/?signature=7Zu2q3-Yuys1453XZfbD3zli83I"
 
     assert_equal expected_signed_url, signed_url
-    assert SignedURL.verified?(signed_url, key: "secret", algorithm: "SHA1")
+    assert SignedURL.verified?(signed_url, key: "secret", hmac_proc: hmac_proc)
   end
 
   test "creates signed url using custom signature param name" do
@@ -33,8 +40,7 @@ class URLSignatureTest < Minitest::Test
     signed_url = SignedURL.call(url, key: "secret", signature_param: "s")
 
     expected_signed_url =
-      "https://example.com/?s=" \
-      "c771eb2410419239cd74ef3f47676e2eab0ae172f1c3d44be31219f5089bfafc"
+      "https://example.com/?s=x3HrJBBBkjnNdO8_R2duLqsK4XLxw9RL4xIZ9Qib-vw"
 
     assert_equal expected_signed_url, signed_url
     assert SignedURL.verified?(signed_url, key: "secret", signature_param: "s")
@@ -51,8 +57,8 @@ class URLSignatureTest < Minitest::Test
     )
 
     expected_signed_url =
-      "https://example.com/?signature=35d975106f505c0eee912652292cf50cabfc" \
-      "328863ebae9c2c19ead7e5f20cfe&until=#{expires}"
+      "https://example.com/?signature=Ndl1EG9QXA7ukSZSKSz1DKv8Mohj666cLBnq1-" \
+      "XyDP4&until=#{expires}"
 
     assert_equal expected_signed_url, signed_url
     assert SignedURL.verified?(

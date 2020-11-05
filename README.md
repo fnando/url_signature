@@ -36,8 +36,9 @@ arguments are:
 - `params`: Any additional params you want to add as query strings.
 - `expires`: Any integer representing an epoch time. Urls won't be verified
   after this date. By default, urls don't expire.
-- `algorithm`: The hashing algorithm that will be used. By default, SHA256 will
-  be used.
+- `hmac_proc`: `Proc` that will generate the signature. By default, it generates
+  a `base64url(sha512_hmac(data))` signature (with no padding). The proc will be
+  called with two parameters: `key` and `data`.
 - `signature_param`: The signature's param name. By default it's `signature`.
 - `expires_param`: The expires' param name. By default it's `expires`.
 

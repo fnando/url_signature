@@ -40,6 +40,8 @@ module URLSignature
       return if params.empty?
 
       query = params.each_with_object([]) do |(param, value), buffer|
+        param = param.to_s
+
         if param.include?("[")
           value.each {|v| buffer << "#{encode(param)}=#{encode(v)}" }
         else

@@ -11,7 +11,7 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-## Unreleased
+## v0.0.2 - 2020-11-04
 
 - [Changed] Replace HMAC algorithm with a proc that can be customized.
 

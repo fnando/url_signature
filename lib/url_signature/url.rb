@@ -71,7 +71,7 @@ module URLSignature
     end
 
     private def parse_query(query)
-      Hash[CGI.parse(query.to_s).to_a]
+      CGI.parse(query.to_s)
     end
 
     private def parse_url(url)

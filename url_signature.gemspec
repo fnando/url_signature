@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary     = "Create and verify signed urls. Supports expiration time."
   spec.description = spec.summary
   spec.license     = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
 
   github_url = "https://github.com/fnando/url_signature"
   github_tree_url = "#{github_url}/tree/v#{spec.version}"

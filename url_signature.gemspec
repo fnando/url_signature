@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "#{github_tree_url}/CHANGELOG.md"
   spec.metadata["documentation_uri"] = "#{github_tree_url}/README.md"
   spec.metadata["license_uri"] = "#{github_tree_url}/LICENSE.md"
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`

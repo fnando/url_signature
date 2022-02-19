@@ -56,7 +56,7 @@ module URLSignature
     false
   end
 
-  def self.verify!( # rubocop:disable Metrics/MethodLength
+  def self.verify!(
     url,
     key:,
     hmac_proc: HMAC_PROC,

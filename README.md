@@ -10,7 +10,6 @@
 
 <p align="center">
   <a href="https://github.com/fnando/url_signature"><img src="https://github.com/fnando/url_signature/workflows/Tests/badge.svg" alt="Tests"></a>
-  <a href="https://codeclimate.com/github/fnando/url_signature"><img src="https://codeclimate.com/github/fnando/url_signature/badges/gpa.svg" alt="Code Climate"></a>
   <a href="https://rubygems.org/gems/url_signature"><img src="https://img.shields.io/gem/v/url_signature.svg" alt="Version"></a>
   <a href="https://rubygems.org/gems/url_signature"><img src="https://img.shields.io/gem/dt/url_signature.svg" alt="Downloads"></a>
 </p>

@@ -4,18 +4,20 @@ require "test_helper"
 
 class URLTest < Minitest::Test
   test "rejects non-http uris" do
-    error = assert_raises { URLSignature::URL.new("example.com") }
-
-    assert_equal URLSignature::InvalidURL, error.class
+    assert_raises(URLSignature::InvalidURL) do
+      URLSignature::URL.new("example.com")
+    end
   end
 
   test "parses basic http url" do
     url = URLSignature::URL.new("http://example.com")
+
     assert_equal "http://example.com/", url.to_s
   end
 
   test "parses basic https url" do
     url = URLSignature::URL.new("https://example.com")
+
     assert_equal "https://example.com/", url.to_s
   end
 
@@ -73,21 +75,19 @@ class URLTest < Minitest::Test
   end
 
   test "rejects non-qualified urls" do
-    error = assert_raises do
+    error = assert_raises(URLSignature::InvalidURL) do
       URLSignature::URL.new("example.com")
     end
 
-    assert_equal URLSignature::InvalidURL, error.class
     assert_equal "example.com must be a fully qualified URL (http/https)",
                  error.message
   end
 
   test "rejects invalid urls" do
-    error = assert_raises do
+    error = assert_raises(URLSignature::InvalidURL) do
       URLSignature::URL.new("\\")
     end
 
-    assert_equal URLSignature::InvalidURL, error.class
     assert_equal "\\ must be a fully qualified URL (http/https)",
                  error.message
   end

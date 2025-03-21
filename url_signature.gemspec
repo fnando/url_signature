@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "./lib/url_signature/version"
+require_relative "lib/url_signature/version"
 
 Gem::Specification.new do |spec|
   spec.name    = "url_signature"
@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary     = "Create and verify signed urls. Supports expiration time."
   spec.description = spec.summary
   spec.license     = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.3.0")
 
   github_url = "https://github.com/fnando/url_signature"
   github_tree_url = "#{github_url}/tree/v#{spec.version}"
@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) {|f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "base64"
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "minitest-utils"
   spec.add_development_dependency "pry-meta"

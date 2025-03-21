@@ -35,6 +35,35 @@ class URLSignatureTest < Minitest::Test
     assert SignedURL.verified?(signed_url, key: "secret", hmac_proc: hmac_proc)
   end
 
+  test "creates signed url using HMAC that checks only path + query" do
+    hmac_proc = lambda do |key, data|
+      data = [data.path, ("?#{data.query}" if data.query)].compact.join
+
+      Base64.urlsafe_encode64(
+        OpenSSL::HMAC.digest("sha1", key, data),
+        padding: false
+      )
+    end
+
+    signed_url = SignedURL.call(
+      "https://example.com/?a=1",
+      key: "secret",
+      hmac_proc: hmac_proc
+    )
+
+    urls = [
+      signed_url,
+      signed_url.gsub("example.com", "example.org")
+    ]
+
+    assert_equal 2, urls.uniq.size
+
+    urls.each do |url|
+      assert SignedURL.verified?(url, key: "secret", hmac_proc: hmac_proc),
+             "Expected #{url.inspect} to be verified"
+    end
+  end
+
   test "creates signed url using custom signature param name" do
     url = "https://example.com"
     signed_url = SignedURL.call(url, key: "secret", signature_param: "s")

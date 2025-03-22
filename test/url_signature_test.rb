@@ -133,6 +133,16 @@ class URLSignatureTest < Minitest::Test
     assert SignedURL.verified?(signed_url, key: "secret")
   end
 
+  test "generates url with nil params" do
+    signed_url = SignedURL.call(
+      "https://example.com",
+      key: "secret",
+      params: {a: nil}
+    )
+
+    assert SignedURL.verified?(signed_url, key: "secret")
+  end
+
   test "accepts time objects as expiration time" do
     signed_url = SignedURL.call(
       "https://example.com",

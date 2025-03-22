@@ -59,6 +59,11 @@ class URLTest < Minitest::Test
                  url.to_s
 
     url.clear_query!
+    url.add_query "a", nil
+
+    assert_equal "https://example.com/?a=", url.to_s
+
+    url.clear_query!
     url.add_query("a[]", 1)
     url.add_query("a[]", 2, replace: false)
     url.add_query("a[]", [3, 4], replace: false)

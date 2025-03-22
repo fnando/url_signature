@@ -57,17 +57,18 @@ module URLSignature
     end
 
     def to_s
-      [
-        "#{scheme}://#{host}",
-        port ? ":#{port}" : nil,
-        path,
-        query ? "?#{query}" : nil,
-        fragment ? "##{fragment}" : nil
-      ].compact.join
+      uri = URI.parse("/")
+      uri.scheme = scheme
+      uri.host = host
+      uri.port = port
+      uri.path = path
+      uri.query = query
+      uri.fragment = fragment
+      uri.to_s
     end
 
     private def encode(value)
-      CGI.escape(value).gsub("+", "%20")
+      CGI.escape(value.to_s).gsub("+", "%20")
     end
 
     private def parse_query(query)
